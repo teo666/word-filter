@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="application/javascript" src="../../dictionary.js"></script>
+    <script type="application/javascript" src="../../src/wordfilter.js"></script>
+</head>
+<body>
+<h3>Show returned values in console</h3>
+<input onkeyup="key_handler(this.value)">
+
+<script>
+
+    let timeout;
+
+
+    let wf = new WordFilter({
+        source: dict,
+        search_results: WF_RET.EXACT_MATCH | WF_RET.START_WITH | WF_RET.CONTAINS_SUBSTRING | WF_RET.CONTAINS_SEQUNCE,
+        max_output: 5
+    });
+
+    function key_handler(val) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            let res = wf.search(val);
+            console.log(res);
+        }, 200)
+    }
+
+
+</script>
+</body>
+</html>
