@@ -35,11 +35,11 @@
 
     let wf = new WordFilter({
         source: elements,
-        source_field: function (item) {
+        searchField: function (item) {
             return item.innerText;
         },
-        max_output: 10,
-        search_results: WF_RET.EXACT_MATCH | WF_RET.START_WITH | WF_RET.CONTAINS_SUBSTRING | WF_RET.CONTAINS_SEQUNCE
+        maxOutput: 10,
+        searchMask: WF_RET.EXACT_MATCH | WF_RET.START_WITH | WF_RET.CONTAINS_SUBSTRING | WF_RET.CONTAINS_SEQUNCE
     });
 
     function empty() {

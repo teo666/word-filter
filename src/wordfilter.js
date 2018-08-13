@@ -5,15 +5,51 @@ let WF_RET = Object.freeze({"EXACT_MATCH":1, "START_WITH":2, "CONTAINS_SUBSTRING
 const meta = ['\\','!','$','&','?','^','+','*','(',')','[',']','{','}','.','|','<','>','-'];
 
 function WordFilter(opt) {
-    this.source = opt.source;
-    this.source_field = opt.source_field || function(item){return item};
-    this.search_results = opt.search_results;
-    this.max_output = (opt.max_output > 0) ? opt.max_output : -1;
+    this.setSource(opt.source);
+    this.setSearchField(opt.searchField);
+    this.setSearchMask(opt.searchMask)
+    this.setMaxOutput(opt.maxOutput);
     this.tot_el = 0;
 }
 
+WordFilter.prototype.setSource = function(s){
+    if(Array.isArray(s)){
+        this.source = s;
+    } else {
+        throw "WordFilter : Sources is not an array";
+    }
+}
+
+WordFilter.prototype.setSearchField = function(f){
+    if(f === undefined){
+        this.searchField = function(item){return item};
+        return;
+    } else if((typeof f).toLowerCase() == 'function'){
+        this.searchField = f;
+    } else {
+        throw "WordFilter : searchField is not a function";
+    }
+}
+
+WordFilter.prototype.setMaxOutput = function(n){
+    if(Number.isInteger(n) && n > 0){
+        this.maxOutput = n;
+    } else {
+        this.maxOutput = -1;
+    }
+}
+
+WordFilter.prototype.setSearchMask = function(n){
+    if(Number.isInteger(n) && n >= 0){
+        this.searchResult = n;
+    } else {
+        throw "WordFilter : searchMask is not an integer";
+    }
+    
+}
+
 WordFilter.prototype.add = function(arr, word, pos){
-    if(this.tot_el == this.max_output){
+    if(this.tot_el == this.maxOutput){
         let pos_w = 4;
         let ret;
         while ( pos_w > pos && !(ret = arr[pos_w].pop()) ){
@@ -62,14 +98,14 @@ WordFilter.prototype.search = function (val) {
     this.tot_el = 0;
 
     this.source.some(function (item,i) {
-        let text = self.source_field(item);
-        if( (self.search_results & WF_RET.EXACT_MATCH ) && text.match(reg_1)){
+        let text = self.searchField(item);
+        if( (self.searchResult & WF_RET.EXACT_MATCH ) && text.match(reg_1)){
             self.add(ret, item, 1);
-        } else if( (self.search_results & WF_RET.START_WITH ) && text.match(reg_2)){
+        } else if( (self.searchResult & WF_RET.START_WITH ) && text.match(reg_2)){
             self.add(ret, item, 2);
-        } else if( (self.search_results & WF_RET.CONTAINS_SUBSTRING ) && text.match(reg_3)){
+        } else if( (self.searchResult & WF_RET.CONTAINS_SUBSTRING ) && text.match(reg_3)){
             self.add(ret, item, 3);
-        } else if( (self.search_results & WF_RET.CONTAINS_SEQUNCE ) && text.match(reg_4)){
+        } else if( (self.searchResult & WF_RET.CONTAINS_SEQUNCE ) && text.match(reg_4)){
             self.add(ret, item, 4);
         }
     });
