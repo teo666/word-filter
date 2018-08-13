@@ -9,6 +9,24 @@ function WordFilter(opt) {
     this.source_field = opt.source_field || function(item){return item};
     this.search_results = opt.search_results;
     this.max_output = (opt.max_output > 0) ? opt.max_output : -1;
+    this.tot_el = 0;
+}
+
+WordFilter.prototype.add = function(arr, word, pos){
+    if(this.tot_el == this.max_output){
+        let pos_w = 4;
+        let ret;
+        while ( pos_w > pos && !(ret = arr[pos_w].pop()) ){
+            pos_w--;
+        }
+        if(ret){
+            this.tot_el--;
+        } else {
+            return;
+        }    
+    }
+    arr[pos].push(word);
+    this.tot_el++;
 }
 
 WordFilter.prototype.search = function (val) {
@@ -40,24 +58,19 @@ WordFilter.prototype.search = function (val) {
     let reg_2 = new RegExp(_reg_2,'ig');
     let reg_3 = new RegExp(_reg_3,'ig');
     let reg_4 = new RegExp(_reg_4,'ig');
-    let tot = 0;
+
+    this.tot_el = 0;
+
     this.source.some(function (item,i) {
         let text = self.source_field(item);
         if( (self.search_results & WF_RET.EXACT_MATCH ) && text.match(reg_1)){
-            ret['1'].push(item);
-            tot++;
+            self.add(ret, item, 1);
         } else if( (self.search_results & WF_RET.START_WITH ) && text.match(reg_2)){
-            ret['2'].push(item);
-            tot++;
+            self.add(ret, item, 2);
         } else if( (self.search_results & WF_RET.CONTAINS_SUBSTRING ) && text.match(reg_3)){
-            ret['3'].push(item);
-            tot++;
+            self.add(ret, item, 3);
         } else if( (self.search_results & WF_RET.CONTAINS_SEQUNCE ) && text.match(reg_4)){
-            ret['4'].push(item);
-            tot++;
-        }
-        if(tot == self.max_output){
-            return true;
+            self.add(ret, item, 4);
         }
     });
     return ret;

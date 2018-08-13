@@ -7,6 +7,8 @@
     <script type="application/javascript" src="../../src/wordfilter.js"></script>
 </head>
 <body>
+<h3>Search a  english word</h3>
+<p>max 10 results</p>
 <input onkeyup="key_handler(this.value)">
 <div id="main">
     <div id="_cont1"></div>
@@ -36,6 +38,7 @@
         source_field: function (item) {
             return item.innerText;
         },
+        max_output: 10,
         search_results: WF_RET.EXACT_MATCH | WF_RET.START_WITH | WF_RET.CONTAINS_SUBSTRING | WF_RET.CONTAINS_SEQUNCE
     });
 
