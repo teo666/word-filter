@@ -106,4 +106,4 @@ During the search, source array is scanned from position 0 to length - 1, and in
 
 `the lower the value of the key of the returned array inside the output object the higher priority is`
 
-in the above example "differ" is and exact match but the output limit is reached before reach it so WordFilter will search an element to delete starting from lower priority returned array and higher priority word will be included.
+in the above example "differ" is and exact match but the output limit is reached before reach it, so WordFilter will search an element to delete starting from lower priority returned array and higher priority word will be included.
